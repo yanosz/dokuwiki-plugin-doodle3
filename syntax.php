@@ -14,6 +14,7 @@
 if(!defined('DOKU_INC')) define('DOKU_INC',realpath(dirname(__FILE__).'/../../').'/');
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'syntax.php');
+require_once('doodle-utils.php');
 
 /**
  * Displays a table where users can vote for some predefined choices
@@ -228,7 +229,7 @@ class syntax_plugin_doodle3 extends DokuWiki_Syntax_Plugin
         $this->choices   = $data['choices'];
         $this->doodle    = array();
         $this->template  = array();
-        
+
         // prevent caching to ensure the poll results are fresh
         $renderer->info['cache'] = false;
 
@@ -237,7 +238,6 @@ class syntax_plugin_doodle3 extends DokuWiki_Syntax_Plugin
             $this->doodle = $this->readDoodleDataFromFile();
         }
 
-        //FIXME: count($choices) may be different from number of choices in $doodle data!
 
         // ----- FORM ACTIONS (only allowed when showing the most recent version of the page, not when editing) -----
         $formId =  'doodle__form__'.cleanID($this->params['title']);
@@ -267,7 +267,7 @@ class syntax_plugin_doodle3 extends DokuWiki_Syntax_Plugin
          *   'choices'  is an (variable length!) array of column indexes where user has voted
          *   'ip'       ip of voting machine
          *   'time'     unix timestamp when vote was casted
-         
+
         
         $doodle = array(
           'Robert' => array(
@@ -306,7 +306,7 @@ class syntax_plugin_doodle3 extends DokuWiki_Syntax_Plugin
                 if (!empty($userData['username'])) {
                   $this->template['doodleData']["$fullname"]['username'] = '&nbsp;('.$userData['username'].')';
                 }
-                if (in_array($col, $userData['choices'])) {
+                if (DoodleUtils::optionIsChosen($col,$this->choices,$userData['choices'])) {
                     $timeLoc = strftime($conf['dformat'], $userData['time']);  // localized time of vote
                     $this->template['doodleData']["$fullname"]['choice'][$col] = 
                         '<td  class="centeralign" style="background-color:#AFA"><img src="'.DOKU_BASE.'lib/images/success.png" title="'.$timeLoc.'"></td>';
@@ -405,7 +405,7 @@ class syntax_plugin_doodle3 extends DokuWiki_Syntax_Plugin
         if (!empty($_SERVER['REMOTE_USER'])) {
           $this->doodle["$fullname"]['username'] = $_SERVER['REMOTE_USER'];
         }
-        $this->doodle["$fullname"]['choices'] = $selected_indexes;
+        $this->doodle["$fullname"]['choices'] = DoodleUtils::selectedOptionIds($selected_indexes,$this->choices);
         $this->doodle["$fullname"]['time']    = time();
         $this->doodle["$fullname"]['ip']      = $_SERVER['REMOTE_ADDR'];
         $this->writeDoodleDataToFile();
