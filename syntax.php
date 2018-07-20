@@ -264,11 +264,51 @@ class syntax_plugin_doodle3 extends DokuWiki_Syntax_Plugin
          * The $doodle array maps fullnames (with html special characters masked) to an array of userData for this vote.
          * Each sub array contains:
          *   'username' loggin name if use was logged in
-         *   'choices'  is an (variable length!) array of column indexes where user has voted
+         *   'choices'  is an (variable length!) array of opns where user has voted, with html-tages removed
          *   'ip'       ip of voting machine
          *   'time'     unix timestamp when vote was casted
 
-        
+         $doodle = array(
+          'Robert' => array(
+            'username'  => 'doogie'
+            'choices'   => array("Option A", "Option C"),
+            'ip'        => '123.123.123.123',
+            'time'      => 1284970602
+          ),
+          'Peter' => array(
+            'choices'   => array(),
+            'ip'        => '222.122.111.1',
+            'time'      > 12849702333
+          ),
+          'Sabine' => array(
+            'choices'   => array("Option A", "Option B","Option C", "Option D"),
+            'ip'        => '333.333.333.333',
+            'time'      => 1284970222
+          ),
+        );
+
+         Note that, array indexex were used before - data is converted on the fly.
+
+         $doodle = array(
+        'Robert' => array(
+        'username'  => 'doogie'
+        'choices'   => array(0, 3),
+        'ip'        => '123.123.123.123',
+        'time'      => 1284970602
+        ),
+        'Peter' => array(
+        'choices'   => array(),
+        'ip'        => '222.122.111.1',
+        'time'      > 12849702333
+        ),
+        'Sabine' => array(
+        'choices'   => array(0, 1, 2, 3, 4),
+        'ip'        => '333.333.333.333',
+        'time'      => 1284970222
+        ),
+        );
+
+
         $doodle = array(
           'Robert' => array(
             'username'  => 'doogie'

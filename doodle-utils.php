@@ -24,13 +24,13 @@ class DoodleUtils {
 
     /**
      * Calculates the identifier of an option.
-     * Only the name is taken into account
+     * Only the name is taken into account - HTML Tags are stripped, 'cause formatting is assumed not be semantic
      * @param $column - $column - number of current column, when rendering the result table
      * @param $choices - number of current column, when rendering the result table
      * @return mixed - option name
      */
     public static function optionId($column, $choices){
-        return $choices[$column];
+        return strip_tags($choices[$column]);
     }
 
     /**
